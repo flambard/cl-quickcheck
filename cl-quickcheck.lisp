@@ -376,16 +376,16 @@ either passed *NUM-TRIALS* times or failed at least once."
 		   `(defparameter ,fn
 		      (lambda ,params ,@body))))))))
 
-(define (a-boolean)
+(defun a-boolean ()
   (= 0 (random 2)))
 
-(define (an-index)
+(defun an-index ()
   (random *size*))
 
-(define (an-integer)
+(defun an-integer ()
   (- (random (+ *size* *size* 1)) *size*))
 
-(define (a-real) 
+(defun a-real () 
   (- (random (float (* 2 *size*)))
      *size*))
 

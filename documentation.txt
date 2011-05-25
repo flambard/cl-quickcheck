@@ -5,7 +5,7 @@ package and use it to test that 2+3=5:
 
   CL-USER> (load "cl-quickcheck.lisp")
   CL-USER> (use-package :cl-quickcheck)
-  CL-USER> (cl-quickcheck (is= (+ 2 3) 5))
+  CL-USER> (quickcheck (is= (+ 2 3) 5))
   Starting tests with seed 
   #S(RANDOM-STATE
      #*0110000000100101111101000101000111001100101100111001010111011101)
@@ -16,7 +16,7 @@ package and use it to test that 2+3=5:
 Why display the seed?  For repeatability when we run random test
 cases:
 
-  CL-USER> (cl-quickcheck (for-all ((s #'a-string))
+  CL-USER> (quickcheck (for-all ((s #'a-string))
               (is= s s)))
 
   Starting tests with seed 
@@ -26,7 +26,7 @@ cases:
   1 test submitted; all passed.
   T
 
-  CL-USER> (cl-quickcheck (for-all ((n #'an-integer))
+  CL-USER> (quickcheck (for-all ((n #'an-integer))
 			  (is= (* 2 n) (+ n n))))
   Starting tests with seed 
   #S(RANDOM-STATE
@@ -40,7 +40,7 @@ each.  The summary line "1 test submitted" means the same single test
 was done on all those random values of N.  We could have done more
 tests:
 
-  CL-USER> (cl-quickcheck (for-all ((n #'an-integer))
+  CL-USER> (quickcheck (for-all ((n #'an-integer))
 			  (is= (* 2 n) (+ n n))
 			  (is= (* 3 n) (+ n n n)))
 			(for-all ((m #'an-integer) (n #'an-integer))
@@ -52,15 +52,15 @@ tests:
   3 tests submitted; all passed.
   NIL
 
-In general, (CL-QUICKCHECK expression...) evaluates the argument
+In general, (QUICKCHECK expression...) evaluates the argument
 expressions and reports on any tests performed in that dynamic extent.
 This means you can put the tests off in functions or files or
-wherever; typical usage is then like (cl-quickcheck (my-test-suite)) or
-(cl-quickcheck (load "tests1.lisp") (load "tests2.lisp")).
+wherever; typical usage is then like (quickcheck (my-test-suite)) or
+(quickcheck (load "tests1.lisp") (load "tests2.lisp")).
 
 Let's see what failure looks like:
 
-  CL-USER> (cl-quickcheck (for-all ((n #'an-integer))
+  CL-USER> (quickcheck (for-all ((n #'an-integer))
 			  (test (evenp n))))
   Starting tests with seed 
   #S(RANDOM-STATE
@@ -88,7 +88,7 @@ You can define test-data generators for your own types of data:
 		 (2 'green)
 		 (1 'blue))))
   A-COLOR
-  CL-USER> (cl-quickcheck (for-all ((c #'a-color))
+  CL-USER> (quickcheck (for-all ((c #'a-color))
 			  (test (symbolp c))))
   Starting tests with seed 
   #S(RANDOM-STATE
@@ -129,7 +129,7 @@ REFERENCE
 
 Overall Control of Testing
 
-Macro CL-QUICKCHECK &body body
+Macro QUICKCHECK &body body
 Write the current random seed, run BODY with *TESTING* bound to T, and
 report the results of any tests.
 
@@ -140,7 +140,7 @@ Function REPORT tests
 Print out a summary of the interesting test results.
 
 Variable *TESTING*
-When true, we're in the dynamic extent of a CL-QUICKCHECK form.
+When true, we're in the dynamic extent of a QUICKCHECK form.
 
 Variable *BREAK-ON-FAILURE*
 When true, test failures jump us immediately into the debugger.
