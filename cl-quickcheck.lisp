@@ -56,7 +56,7 @@
 ;  see farther-out stuff in ideas file
 
 (defpackage :cl-quickcheck
-  (:export :quickcheck :collect-test-results :report
+  (:export :quickcheck :collect-test-results :report-result
            :test :is :isnt :is= :isnt= :should-signal
 	   :named :wrap-each :only-if :for-all 
 	   :an-index :an-integer :a-real :a-boolean :a-list :a-tuple :a-member :a-char :a-string :a-symbol
@@ -419,9 +419,9 @@ either passed *NUM-TRIALS* times or failed at least once."
 
 ; Standard shorthands (see DEFAULT-GENERATOR)
 
-(define k-generator an-index)
-(define m-generator an-integer)
-(define n-generator an-integer)
+(define k-generator #'an-index)
+(define m-generator #'an-integer)
+(define n-generator #'an-integer)
 
 ; Helper for custom test-data generators
 
@@ -454,9 +454,9 @@ either passed *NUM-TRIALS* times or failed at least once."
 (defun run-quickcheck (fn)
   "Call FN to run a test suite, and report the result."
   (format t "~&Starting tests with seed ~s~%" *random-state*)
-  (report (collect-test-results fn)))
+  (report-result (collect-test-results fn)))
 
-(defun report (test-cases)
+(defun report-result (test-cases)
   "Print out the interesting test results in longer form."
   (let* ((tests (sort-out test-cases))
 	 (verdicts (mapcar #'verdict tests)))
