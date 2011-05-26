@@ -357,25 +357,6 @@ either passed *NUM-TRIALS* times or failed at least once."
 (defvar *size* 20
   "Bounds the size of random test cases in a generator-dependent way.")
 
-; We need to define the value cell because names like A-BOOLEAN are
-; used in the value position in expressions, not the function
-; position.  Unfortunately Common Lisp won't let us make a lexically
-; scoped global -- this seems about the best we can do.
-(eval-when (:execute :compile-toplevel :load-toplevel)
-  (defmacro define (binding &body body)
-    "Like Scheme's top-level DEFINE, more or less."
-    (cond ((symbolp binding)
-	   `(defparameter ,binding ,@body))
-	  (t (let ((fn (first binding))
-		   (params (rest binding)))
-	       (if (and (stringp (first body))
-			(not (null (rest body))))
-		   `(defparameter ,fn
-		      (lambda ,params ,@body)
-		      ,(first body))
-		   `(defparameter ,fn
-		      (lambda ,params ,@body))))))))
-
 (defun a-boolean ()
   (= 0 (random 2)))
 
@@ -416,6 +397,25 @@ either passed *NUM-TRIALS* times or failed at least once."
 
 (defun random-element (list)
   (nth (random (length list)) list))
+
+; We need to define the value cell because names like A-BOOLEAN are
+; used in the value position in expressions, not the function
+; position.  Unfortunately Common Lisp won't let us make a lexically
+; scoped global -- this seems about the best we can do.
+(eval-when (:execute :compile-toplevel :load-toplevel)
+  (defmacro define (binding &body body)
+    "Like Scheme's top-level DEFINE, more or less."
+    (cond ((symbolp binding)
+	   `(defparameter ,binding ,@body))
+	  (t (let ((fn (first binding))
+		   (params (rest binding)))
+	       (if (and (stringp (first body))
+			(not (null (rest body))))
+		   `(defparameter ,fn
+		      (lambda ,params ,@body)
+		      ,(first body))
+		   `(defparameter ,fn
+		      (lambda ,params ,@body))))))))
 
 ; Standard shorthands (see DEFAULT-GENERATOR)
 
