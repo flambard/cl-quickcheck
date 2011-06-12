@@ -138,12 +138,14 @@ test result whose name is TEST quoted."
     "Perform the test in BODY for random values of BINDINGS."
     (let ((bindings (mapcar #'normalize-binding bindings)))
       (let ((vars (mapcar #'first bindings))
-	    (generators (mapcar #'second bindings)))
-	`(run-for-all (lambda ,vars ,@body) ',vars ,@generators))))
+	    (generators (mapcar #'second bindings))
+	    (shrinks (mapcar #'third bindings)))
+	`(run-for-all (lambda ,vars ,@body) ',vars ',generators ',shrinks))))
 
   (defun normalize-binding (binding)
     "Return BINDING's pair of name and generator expression."
-    (cond ((and (consp binding) (= 2 (length binding)))
+    (cond ((and (consp binding) (or (= 2 (length binding))
+				    (= 3 (length binding))))
 	   binding)
 	  ((symbolp binding) 
 	   (list binding (default-generator binding)))
@@ -293,7 +295,7 @@ list of a function to call for the actual test, plus its arguments."
 (defvar *num-trials* 100
   "Number of random trials we want to see pass in FOR-ALL tests.")
 
-(defun run-for-all (test-fn vars &rest generators)
+(defun run-for-all (test-fn vars generators shrinks)
   "Repeatedly call TEST-FN with VARS bound to values from GENERATORS."
   (let ((status (make-hash-table :test #'equal)))
     (let-dfv ((*logger* (test)
@@ -347,35 +349,16 @@ either passed *NUM-TRIALS* times or failed at least once."
 (defvar *size* 20
   "Bounds the size of random test cases in a generator-dependent way.")
 
-; We need to define the value cell because names like A-BOOLEAN are
-; used in the value position in expressions, not the function
-; position.  Unfortunately Common Lisp won't let us make a lexically
-; scoped global -- this seems about the best we can do.
-(eval-when (:execute :compile-toplevel :load-toplevel)
-  (defmacro define (binding &body body)
-    "Like Scheme's top-level DEFINE, more or less."
-    (cond ((symbolp binding)
-	   `(defparameter ,binding ,@body))
-	  (t (let ((fn (first binding))
-		   (params (rest binding)))
-	       (if (and (stringp (first body))
-			(not (null (rest body))))
-		   `(defparameter ,fn
-		      (lambda ,params ,@body)
-		      ,(first body))
-		   `(defparameter ,fn
-		      (lambda ,params ,@body))))))))
-
-(define (a-boolean)
+(defun a-boolean ()
   (= 0 (random 2)))
 
-(define (an-index)
+(defun an-index ()
   (random *size*))
 
-(define (an-integer)
+(defun an-integer ()
   (- (random (+ *size* *size* 1)) *size*))
 
-(define (a-real) 
+(defun a-real () 
   (- (random (float (* 2 *size*)))
      *size*))
 
@@ -409,9 +392,9 @@ either passed *NUM-TRIALS* times or failed at least once."
 
 ; Standard shorthands (see DEFAULT-GENERATOR)
 
-(define k-generator an-index)
-(define m-generator an-integer)
-(define n-generator an-integer)
+(defun k-generator () (an-index))
+(defun m-generator () (an-integer))
+(defun n-generator () (an-integer))
 
 ; Helper for custom test-data generators
 
@@ -443,10 +426,10 @@ either passed *NUM-TRIALS* times or failed at least once."
 
 (defun run-quickcheck (fn)
   "Call FN to run a test suite, and report the result."
-  (format t "~&Starting tests with seed ~s~%" *random-state*)
-  (report (collect-test-results fn)))
+;  (format t "~&Starting tests with seed ~s~%" *random-state*)
+  (report-result (collect-test-results fn)))
 
-(defun report (test-cases)
+(defun report-result (test-cases)
   "Print out the interesting test results in longer form."
   (let* ((tests (sort-out test-cases))
 	 (verdicts (mapcar #'verdict tests)))

@@ -13,7 +13,7 @@
   (and (subsetp x y) (subsetp y x)))
 
 (when *testing*
-  (let ((a-set (a-list an-index)))
+  (let ((a-set (a-list #'an-index)))
     (let ((x-generator a-set)
 	  (y-generator a-set)
 	  (z-generator a-set))

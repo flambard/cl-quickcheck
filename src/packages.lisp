@@ -6,7 +6,7 @@
 
    #:quickcheck
    #:collect-test-results
-   #:report
+   #:report-result
 
    #:test
    #:is

@@ -42,21 +42,21 @@
 
   (is= "
 0 tests submitted."
-       (output-of (report (isolate))))
+       (output-of (report-result (isolate))))
   (is= "..
 2 tests submitted; all passed."
-       (output-of (report (isolate (test (= 0 0)) 
+       (output-of (report-result (isolate (test (= 0 0)) 
 				   (test (= 1 1))))))
    (is= ".X
 FAIL (TEST NIL)
 2 tests submitted; 1 FAILED."
-	(output-of (report (isolate (test t) (test nil)))))
+	(output-of (report-result (isolate (test t) (test nil)))))
 
    (is= "X
 FAIL (IS = (+ 2 3) 4)
   with values 5 4
 1 test submitted; 1 FAILED."
-	(output-of (report (list (isolate (is = (+ 2 3) 4))))))
+	(output-of (report-result (list (isolate (is = (+ 2 3) 4))))))
 
    (named "*BREAK-ON-FAILURE* set to T disables error interception"
 	  (should-signal 'simple-type-error
@@ -75,7 +75,7 @@ FAIL (IS = (+ 2 3) 4)
 FAIL \"Name\"
   1/2 counterexamples.
 1 test submitted; 1 FAILED."
-	(output-of (report (isolate (named "Name" (test nil))
+	(output-of (report-result (isolate (named "Name" (test nil))
 				    (named "Name" (test t))))))
 
    (let ((*num-trials* 3))
@@ -89,7 +89,7 @@ FAIL (IS= (+ K 1) K)
   for ((K 0))
   3/3 counterexamples.
 2 tests submitted; 1 FAILED."
-	  (output-of (report (isolate
+	  (output-of (report-result (isolate
 			      (for-all ((k (lambda () 0)))
 				(is= (+ k 1) k)
 				(is= k k)))))))
@@ -103,11 +103,11 @@ FAIL (IS= (+ K 1) K)
    (flet ((random (n) 1))
      (is= 'b (pick-weighted (1 'a) (1 'b))))
    (flet ((random (n) 1))
-     (is= 'a (pick-weighted (2 'a) (1 'b))))
+     (is= 'a (pick-weighted (2 'a) n(1 'b))))
    (flet ((random (n) 2))
        (is= 'b (pick-weighted (2 'a) (1 'b)))))
 
-   (for-all ((b a-boolean)) 
+   (for-all ((b #'a-boolean)) 
      (is typep b 'boolean))
    (for-all (k) 
      (is integerp k) 
@@ -115,10 +115,10 @@ FAIL (IS= (+ K 1) K)
    (for-all (n)
      (is integerp n) 
      (is <= (- *size*) n *size*))
-   (for-all ((r a-real)) 
+   (for-all ((r #'a-real)) 
      (is realp r)
      (is <= (- *size*) r *size*))
-   (for-all ((ns (a-list an-integer)))
+   (for-all ((ns (a-list #'an-integer)))
      (is listp ns)
      (is <= 0 (length ns) *size*)
      (test (every #'integerp ns)))
@@ -134,14 +134,14 @@ SKIP (TEST NIL)
 PASS (TEST T)
   1 case checked and passed in 2 attempts.
 2 tests submitted; 1 SKIPPED."
-	(output-of (report (quietly (only-if nil (test nil))
+	(output-of (report-result (quietly (only-if nil (test nil))
 				    (only-if t   (test t))
 				    (only-if nil (test t))))))
    (named
     "If enough trials passed, don't bother reporting skipped cases."
     (is= "
 1 test submitted; all passed."
-	 (output-of (report (quietly 
+	 (output-of (report-result (quietly 
 			     (loop repeat *num-trials*
 				   collect (only-if t (test t)))
 			     (only-if nil (test t)))))))
@@ -152,7 +152,7 @@ SKIP (TEST NIL)
   for ((K 0))
   0 cases checked and passed in 12 attempts.
 1 test submitted; 1 SKIPPED."
-	  (output-of (report (quietly (for-all ((k (lambda () 0)))
+	  (output-of (report-result (quietly (for-all ((k (lambda () 0)))
 					(only-if nil (test nil))))))))
 
    (named 
@@ -163,7 +163,7 @@ FAIL A
 FAIL B
 FAIL C
 3 tests submitted; 3 FAILED."
-	 (output-of (report (quietly
+	 (output-of (report-result (quietly
 			     (named 'a (test nil))
 			     (named 'b (test nil))
 			     (named 'c (test nil))
