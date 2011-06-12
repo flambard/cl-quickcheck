@@ -35,7 +35,6 @@
    #:m-generator
    #:n-generator
 
-   #:define
    #:generate
    #:pick-weighted
 

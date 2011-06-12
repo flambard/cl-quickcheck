@@ -177,7 +177,7 @@ FAIL C
 	   'hey
 	   'there)))
 
-   (define (a-foo)
+   (defun a-foo
      "Doc comment for A-FOO."
      42)
    (is= "Doc comment for A-FOO."

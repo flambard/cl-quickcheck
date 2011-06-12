@@ -7,10 +7,10 @@
 
 (in-package :cl-quickcheck-samples)
 
-(define x-generator #'an-index)
-(define y-generator #'an-index)
-(define xs-generator (a-list #'an-index))
-(define ys-generator (a-list #'an-index))
+(defun x-generator () (an-index))
+(defun y-generator () (an-index))
+(defun xs-generator () (a-list #'an-index))
+(defun ys-generator () (a-list #'an-index))
 
 (defun test-reverse ()
   (for-all (x)
