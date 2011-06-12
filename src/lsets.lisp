@@ -7,7 +7,7 @@
 ; This is kind of random... I need to try and write a real formal
 ; specification.
 
-(use-package :cl-quickcheck)
+(in-package :cl-quickcheck-samples)
 
 (defun set-equal (x y)
   (and (subsetp x y) (subsetp y x)))

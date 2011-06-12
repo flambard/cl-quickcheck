@@ -34,8 +34,6 @@
 
 (in-package :cl-quickcheck)
 
-(export '(test-doc-file test-doc-stream doc-test))
-
 
 (defun test-doc-file (filename)
   "Scan a documentation file for embedded #{} test cases and test them."

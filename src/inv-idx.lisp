@@ -2,6 +2,8 @@
 ; Based on the Haskell original at
 ; http://www.kimbly.com/code/invidx/haskell/InvIdx.lhs
 
+(in-package :cl-quickcheck-samples)
+
 (defun list-to-idx (a-list)
   (loop for key in (reduce #'adjoin (loop for (key2 vals) in a-list
                                           unless (null vals)
@@ -31,8 +33,6 @@
   (loop for key in keys
         collect (idx-lookup idx key)))
 
-
-(use-package :cl-quickcheck)
 
 (defun idx-equal (idx1 idx2)
   (equal (canon idx1) (canon idx2)))

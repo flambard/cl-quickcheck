@@ -5,7 +5,7 @@
 ;
 ; Example from Kent Beck, _Test-Driven Development_
 
-(use-package :cl-quickcheck)
+(in-package :cl-quickcheck-samples)
 
 (defstruct money amount currency)
 

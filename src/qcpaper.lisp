@@ -5,7 +5,7 @@
 ;
 ; Examples from QuickCheck paper (incomplete)
 
-(use-package :cl-quickcheck)
+(in-package :cl-quickcheck-samples)
 
 (define x-generator an-index)
 (define y-generator an-index)
