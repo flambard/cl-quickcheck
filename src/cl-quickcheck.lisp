@@ -55,16 +55,6 @@
 ;  noticeably slow in CLISP - worth tuning?
 ;  see farther-out stuff in ideas file
 
-(defpackage :cl-quickcheck
-  (:export :quickcheck :collect-test-results :report
-           :test :is :isnt :is= :isnt= :should-signal
-	   :named :wrap-each :only-if :for-all 
-	   :an-index :an-integer :a-real :a-boolean :a-list :a-tuple :a-member :a-char :a-string :a-symbol
-           :k-generator :m-generator :n-generator
-	   :define :generate :pick-weighted
-           :*testing* :*break-on-failure* :*loud* :*num-trials* :*size*
-           :test-name :test-flopped :test-detail :test-bindings)
-  (:use :common-lisp))
 (in-package :cl-quickcheck)
 
 ; Test constructors
