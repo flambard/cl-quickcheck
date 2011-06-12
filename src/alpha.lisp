@@ -6,6 +6,8 @@
 ; A utility for checking correctness of macroexpansions, since they
 ; tend to use generated variable names.
 
+(in-package :cl-quickcheck)
+
 (defun alpha= (x y)
   "Return true iff X and Y are equal up to renaming of bound variables.
 Very crude/incomplete implementation, needs a real code-walker."
@@ -35,12 +37,10 @@ bound."
 (defun normalize-each (n env xs)
   (mapcar (lambda (x) (normalize n env x)) xs))
 
-(defpackage :alpha)
-
 (defun rename (n vars)
   (loop for v in vars
 	for i from n
-	collect (concat-symbol :alpha "g" i)))
+	collect (concat-symbol :clqc-alpha "g" i)))
 
 (defun lookup (env x)
   (or (and (symbolp x) (cdr (assoc x env :test #'eq)))
@@ -60,12 +60,7 @@ bound."
        (symbolp (car x))
        (= 2 (length x))))
 
-(defun concat-symbol (package &rest parts)
-  "Intern a symbol by catenating PARTS."
-  (intern (format nil "~{~a~}" parts) package))
 
-
-(use-package :cl-quickcheck)
 
 (when *testing*
   (is alpha= '(x y z) '(x y z))
